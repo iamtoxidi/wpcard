@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Мои Локации</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;700&display=swap');
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #000;
+            color: #fff;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: flex-start;
+            padding: 2rem 10px;
+        }
+        .container {
+            width: 95%;
+            max-width: 600px;
+            text-align: center;
+        }
+        .btn-black-border {
+            border: 2px solid #fff;
+            background-color: transparent;
+            color: #fff;
+            transition: all 0.2s ease-in-out;
+        }
+        .btn-black-border:hover {
+            background-color: #fff;
+            color: #000;
+        }
+        .hidden {
+            display: none;
+        }
+    </style>
+</head>
+<body class="relative">
+    <div class="container">
+        <!-- Login View -->
+        <div id="login-view" class="hidden w-full max-w-sm mx-auto p-6 bg-gray-900 rounded-lg">
+            <h2 class="text-2xl font-bold mb-6 text-center">Вход в админ-панель</h2>
+            <form id="login-form" class="space-y-4">
+                <div>
+                    <label for="username" class="block text-left mb-1">Логин:</label>
+                    <input type="text" id="username" class="w-full p-2 rounded-md bg-gray-800 border border-gray-700 focus:outline-none focus:ring-2 focus:ring-white">
+                </div>
+                <div>
+                    <label for="password" class="block text-left mb-1">Пароль:</label>
+                    <input type="password" id="password" class="w-full p-2 rounded-md bg-gray-800 border border-gray-700 focus:outline-none focus:ring-2 focus:ring-white">
+                </div>
+                <button type="submit" class="w-full mt-4 px-6 py-3 rounded-md bg-white text-black font-bold">Войти</button>
+            </form>
+            <p id="login-error" class="text-red-400 mt-4 hidden"></p>
+        </div>
+        
+        <!-- Main Application View -->
+        <div id="main-app" class="space-y-8">
+            <!-- Home Page View -->
+            <div id="home-view" class="">
+                <img id="main-logo" src="https://static.tildacdn.com/tild3064-3233-4430-b061-373665383037/Subtract_4.svg" alt="Логотип" class="w-4/5 mx-auto mb-8">
+                <div id="locations-list" class="space-y-4">
+                    <!-- Location buttons will be rendered here -->
+                </div>
+            </div>
+
+            <!-- Location Details View -->
+            <div id="location-view" class="hidden">
+                <button id="back-to-home-btn" class="absolute top-4 left-4 px-4 py-2 rounded-md btn-black-border">Назад</button>
+                <img id="location-logo" src="https://static.tildacdn.com/tild3064-3233-4430-b061-373665383037/Subtract_4.svg" alt="Логотип локации" class="w-1/2 mx-auto mb-4">
+                <h1 id="location-name" class="text-3xl font-bold mb-8"></h1>
+                
+                <div id="map-links" class="flex justify-around items-center gap-2 mb-8">
+                    <!-- Google Maps SVG -->
+                    <a id="map-google" href="#" target="_blank" class="flex-1 flex justify-center items-center p-4 rounded-lg bg-black border-2 border-white">
+                        <svg class="w-24 h-24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path fill="#4285F4" d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"/>
+                            <circle cx="12" cy="9" r="2.5" fill="#fff"/>
+                        </svg>
+                    </a>
+                    <!-- Yandex Maps SVG -->
+                    <a id="map-yandex" href="#" target="_blank" class="flex-1 flex justify-center items-center p-4 rounded-lg bg-black border-2 border-white">
+                        <svg class="w-24 h-24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path fill="#FC3F1D" d="M12 2C6.477 2 2 6.477 2 12s4.477 10 10 10 10-4.477 10-10S17.523 2 12 2zm-2.455 12.835L7.545 10H5l6.09 9H13l-4-6.425-1.545 2.26zm6.91 0L14.455 10H17l-6.09 9H9l4-6.425 1.545 2.26z"/>
+                        </svg>
+                    </a>
+                    <!-- 2GIS SVG -->
+                    <a id="map-2gis" href="#" target="_blank" class="flex-1 flex justify-center items-center p-4 rounded-lg bg-black border-2 border-white">
+                        <svg class="w-24 h-24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path fill="#00D74B" d="M12 2C6.477 2 2 6.477 2 12s4.477 10 10 10 10-4.477 10-10S17.523 2 12 2z"/>
+                            <path fill="#fff" d="M15.5 8c0 .276-.224.5-.5.5h-2.5a.5.5 0 01-.5-.5v-1a.5.5 0 01.5-.5h2.5c.276 0 .5.224.5.5v1zm-2.5 1h-2.5a.5.5 0 00-.5.5v1a.5.5 0 00.5.5h2.5a.5.5 0 00.5-.5v-1a.5.5 0 00-.5-.5z"/>
+                        </svg>
+                    </a>
+                </div>
+
+                <div id="social-links" class="flex justify-around items-center gap-2 mb-8">
+                    <!-- Telegram SVG -->
+                    <a id="social-telegram" href="#" target="_blank" class="flex-1 flex justify-center items-center p-4 rounded-lg bg-black border-2 border-white">
+                        <svg class="w-24 h-24" viewBox="0 0 24 24" fill="#2AABEE" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M12 2C6.477 2 2 6.477 2 12s4.477 10 10 10 10-4.477 10-10S17.523 2 12 2zm5.7 6.4L13.2 16.5c-.1.2-.3.3-.5.3s-.4-.1-.5-.3L10 14.2l-2.7 2.1c-.2.2-.5.2-.7 0s-.2-.5 0-.7l9-5.7c.2-.2.5-.2.7 0 .2.2.2.5 0 .7z"/>
+                        </svg>
+                    </a>
+                    <!-- WhatsApp SVG -->
+                    <a id="social-whatsapp" href="#" target="_blank" class="flex-1 flex justify-center items-center p-4 rounded-lg bg-black border-2 border-white">
+                        <svg class="w-24 h-24" viewBox="0 0 24 24" fill="#25D366" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M12 2C6.477 2 2 6.477 2 12s4.477 10 10 10 10-4.477 10-10S17.523 2 12 2z"/>
+                            <path fill="#fff" d="M15.5 15.08c-.12.2-.24.3-.39.38-.15.08-.3.12-.47.12-.17 0-.33-.04-.49-.12-.15-.08-.27-.18-.39-.3a1.53 1.53 0 01-.3-.41c-.08-.18-.12-.37-.12-.58 0-.2.04-.38.12-.55s.18-.3.3-.41c.12-.1.25-.17.39-.23.14-.06.29-.09.43-.09.15 0 .28.03.4.09s.23.15.31.25c.08.1.13.2.16.31.03.1.05.22.05.34 0 .12-.02.24-.05.36s-.08.23-.16.33c-.08.1-.18.18-.3.25-.11.07-.25.12-.4.15l-.26.05c-.15 0-.29-.03-.41-.09-.13-.06-.24-.15-.35-.26-.1-.11-.19-.23-.26-.38s-.11-.3-.11-.47.04-.32.11-.47.16-.27.26-.38c.11-.11.23-.2.35-.26.13-.07.27-.12.4-.15.13-.03.26-.05.4-.05.15 0 .29.02.43.05s.26.07.39.15c.12.08.24.18.35.29.12.11.22.25.3.4.08.15.12.3.12.47 0 .17-.04.32-.12.47s-.18.28-.3.38c-.12.1-.25.17-.4.22-.15.06-.3.09-.45.09z"/>
+                        </svg>
+                    </a>
+                    <!-- VK SVG -->
+                    <a id="social-vk" href="#" target="_blank" class="flex-1 flex justify-center items-center p-4 rounded-lg bg-black border-2 border-white">
+                        <svg class="w-24 h-24" viewBox="0 0 24 24" fill="#4C75A3" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M12 2C6.477 2 2 6.477 2 12s4.477 10 10 10 10-4.477 10-10S17.523 2 12 2zm2.25 10.96a.5.5 0 01-.5.5h-1.5a.5.5 0 01-.5-.5v-1.5a.5.5 0 01.5-.5h1.5a.5.5 0 01.5.5v1.5zm-3.5 0a.5.5 0 01-.5.5h-1.5a.5.5 0 01-.5-.5v-1.5a.5.5 0 01.5-.5h1.5a.5.5 0 01.5.5v1.5zm-2.25 2.54a.5.5 0 01-.5.5H8a.5.5 0 01-.5-.5v-1.5a.5.5 0 01.5-.5h2.5a.5.5 0 01.5.5v1.5zm10.5-2.54a.5.5 0 01-.5.5h-2.5a.5.5 0 01-.5-.5v-1.5a.5.5 0 01.5-.5h2.5a.5.5 0 01.5.5v1.5z"/>
+                        </svg>
+                    </a>
+                    <!-- Instagram SVG -->
+                    <a id="social-instagram" href="#" target="_blank" class="flex-1 flex justify-center items-center p-4 rounded-lg bg-black border-2 border-white">
+                        <svg class="w-24 h-24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <linearGradient id="instagram-grad" x1="0" y1="0" x2="1" y2="1">
+                                <stop offset="0%" stop-color="#405DE6" />
+                                <stop offset="20%" stop-color="#5851DB" />
+                                <stop offset="50%" stop-color="#833AB4" />
+                                <stop offset="80%" stop-color="#C13584" />
+                                <stop offset="100%" stop-color="#E1306C" />
+                            </linearGradient>
+                            <path fill="url(#instagram-grad)" d="M12 2C6.477 2 2 6.477 2 12s4.477 10 10 10 10-4.477 10-10S17.523 2 12 2zm4.4 3.7c.6 0 1.1.2 1.5.6s.6.9.6 1.5c0 .6-.2 1.1-.6 1.5s-.9.6-1.5.6c-.6 0-1.1-.2-1.5-.6s-.6-.9-.6-1.5c0-.6.2-1.1.6-1.5s.9-.6 1.5-.6zM12 7c2.8 0 5 2.2 5 5s-2.2 5-5 5-5-2.2-5-5 2.2-5 5-5zm0 2c-1.7 0-3 1.3-3 3s1.3 3 3 3 3-1.3 3-3-1.3-3-3-3z"/>
+                        </svg>
+                    </a>
+                </div>
+
+                <a id="netmonet-link" href="#" target="_blank" class="inline-block w-full max-w-sm px-6 py-4 rounded-md bg-white text-black font-bold">Оставить чаевые</a>
+            </div>
+        </div>
+        
+        <!-- Admin Panel View -->
+        <div id="admin-panel" class="hidden w-full max-w-2xl mx-auto p-6 bg-gray-900 rounded-lg">
+            <h2 class="text-2xl font-bold mb-6 text-center">Админ-панель</h2>
+            
+            <p class="mb-4 text-center text-gray-400">
+                Эта панель не сохраняет данные, а генерирует JSON-код для файла `locations.json`, который вы можете загрузить на GitHub.
+            </p>
+
+            <!-- Admin Form -->
+            <form id="admin-form" class="space-y-4">
+                <input type="hidden" id="location-id">
+                <div>
+                    <label for="location-name-input" class="block text-left mb-1">Название локации:</label>
+                    <input type="text" id="location-name-input" class="w-full p-2 rounded-md bg-gray-800 border border-gray-700 focus:outline-none focus:ring-2 focus:ring-white">
+                </div>
+                <div>
+                    <label for="map-google-input" class="block text-left mb-1">Google Maps:</label>
+                    <input type="url" id="map-google-input" class="w-full p-2 rounded-md bg-gray-800 border border-gray-700">
+                </div>
+                <div>
+                    <label for="map-yandex-input" class="block text-left mb-1">Яндекс.Карты:</label>
+                    <input type="url" id="map-yandex-input" class="w-full p-2 rounded-md bg-gray-800 border border-gray-700">
+                </div>
+                <div>
+                    <label for="map-2gis-input" class="block text-left mb-1">2ГИС:</label>
+                    <input type="url" id="map-2gis-input" class="w-full p-2 rounded-md bg-gray-800 border border-gray-700">
+                </div>
+                <div>
+                    <label for="social-telegram-input" class="block text-left mb-1">Telegram:</label>
+                    <input type="url" id="social-telegram-input" class="w-full p-2 rounded-md bg-gray-800 border border-gray-700">
+                </div>
+                <div>
+                    <label for="social-whatsapp-input" class="block text-left mb-1">WhatsApp:</label>
+                    <input type="url" id="social-whatsapp-input" class="w-full p-2 rounded-md bg-gray-800 border border-gray-700">
+                </div>
+                <div>
+                    <label for="social-vk-input" class="block text-left mb-1">ВК:</label>
+                    <input type="url" id="social-vk-input" class="w-full p-2 rounded-md bg-gray-800 border border-gray-700">
+                </div>
+                <div>
+                    <label for="social-instagram-input" class="block text-left mb-1">Instagram:</label>
+                    <input type="url" id="social-instagram-input" class="w-full p-2 rounded-md bg-gray-800 border border-gray-700">
+                </div>
+                <div>
+                    <label for="netmonet-input" class="block text-left mb-1">Netmonet:</label>
+                    <input type="url" id="netmonet-input" class="w-full p-2 rounded-md bg-gray-800 border border-gray-700">
+                </div>
+                <button type="submit" id="submit-btn" class="w-full mt-4 px-6 py-3 rounded-md bg-white text-black font-bold">Сгенерировать JSON</button>
+            </form>
+
+            <div id="json-output" class="mt-6 p-4 bg-gray-800 rounded-lg hidden">
+                <h3 class="text-xl font-bold mb-2">Скопируйте этот JSON-код:</h3>
+                <pre id="json-code" class="text-left text-sm whitespace-pre-wrap break-all"></pre>
+                <button id="copy-json-btn" class="w-full mt-4 px-6 py-2 rounded-md bg-white text-black font-bold">Скопировать</button>
+            </div>
+
+            <hr class="border-gray-700 my-6">
+
+            <button id="back-to-home-from-admin" class="w-full mt-6 px-6 py-2 rounded-md btn-black-border font-bold">Вернуться на главную</button>
+        </div>
+
+        <!-- Message Box for Alerts -->
+        <div id="message-box" class="fixed inset-0 bg-gray-900 bg-opacity-75 flex justify-center items-center hidden">
+            <div class="bg-gray-800 p-6 rounded-lg text-center shadow-lg">
+                <p id="message-text" class="mb-4"></p>
+                <button id="close-message-btn" class="px-4 py-2 bg-white text-black rounded-md font-bold">ОК</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Admin key icon for navigation -->
+    <a id="show-admin-btn" href="#admin" class="fixed bottom-4 right-4 z-50 p-4 rounded-full bg-white bg-opacity-50 hover:bg-opacity-100 transition-opacity">
+        <svg class="w-8 h-8 text-black" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+            <path d="M12 1a4 4 0 0 0-4 4v2H6a3 3 0 0 0-3 3v8a3 3 0 0 0 3 3h12a3 3 0 0 0 3-3v-8a3 3 0 0 0-3-3h-2V5a4 4 0 0 0-4-4zm0 2a2 2 0 0 1 2 2v2H10V5a2 2 0 0 1 2-2zM6 9h12a1 1 0 0 1 1 1v8a1 1 0 0 1-1 1H6a1 1 0 0 1-1-1v-8a1 1 0 0 1 1-1zm3 3v2h6v-2H9z"/>
+        </svg>
+    </a>
+
+    <script type="module">
+        let locations = [];
+        let isLoggedIn = false;
+        
+        // Get all the DOM elements
+        const homeView = document.getElementById('home-view');
+        const locationView = document.getElementById('location-view');
+        const adminPanel = document.getElementById('admin-panel');
+        const loginView = document.getElementById('login-view');
+        const locationsList = document.getElementById('locations-list');
+        const adminForm = document.getElementById('admin-form');
+        const locationIdInput = document.getElementById('location-id');
+        const locationNameInput = document.getElementById('location-name-input');
+        const mapGoogleInput = document.getElementById('map-google-input');
+        const mapYandexInput = document.getElementById('map-yandex-input');
+        const map2gisInput = document.getElementById('map-2gis-input');
+        const socialTelegramInput = document.getElementById('social-telegram-input');
+        const socialWhatsappInput = document.getElementById('social-whatsapp-input');
+        const socialVkInput = document.getElementById('social-vk-input');
+        const socialInstagramInput = document.getElementById('social-instagram-input');
+        const netmonetInput = document.getElementById('netmonet-input');
+        const submitBtn = document.getElementById('submit-btn');
+        const jsonOutput = document.getElementById('json-output');
+        const jsonCode = document.getElementById('json-code');
+        const copyJsonBtn = document.getElementById('copy-json-btn');
+        const messageBox = document.getElementById('message-box');
+        const messageText = document.getElementById('message-text');
+        const closeMessageBtn = document.getElementById('close-message-btn');
+        const loginForm = document.getElementById('login-form');
+        const usernameInput = document.getElementById('username');
+        const passwordInput = document.getElementById('password');
+        const loginError = document.getElementById('login-error');
+        const showAdminBtn = document.getElementById('show-admin-btn');
+        
+        // Function to show a custom message box
+        function showMessage(text) {
+            messageText.textContent = text;
+            messageBox.classList.remove('hidden');
+        }
+
+        // Event listener for closing the message box
+        closeMessageBtn.addEventListener('click', () => {
+            messageBox.classList.add('hidden');
+        });
+
+        // Fetch locations from the JSON file
+        const fetchLocations = async () => {
+            try {
+                const response = await fetch('./locations.json');
+                if (!response.ok) {
+                    throw new Error(`Failed to fetch locations: ${response.statusText}`);
+                }
+                locations = await response.json();
+                renderHomeView();
+            } catch (error) {
+                console.error('Error loading locations:', error);
+                showMessage('Не удалось загрузить данные о локациях. Убедитесь, что файл locations.json существует и доступен.');
+            }
+        };
+
+        // Render the home page buttons
+        const renderHomeView = () => {
+            locationsList.innerHTML = '';
+            locations.forEach(location => {
+                const button = document.createElement('button');
+                button.textContent = location.name;
+                button.className = 'w-full px-6 py-4 rounded-md btn-black-border font-bold';
+                button.addEventListener('click', () => showLocationDetails(location));
+                locationsList.appendChild(button);
+            });
+        };
+
+        // Handle form submission for generating JSON
+        adminForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const locationData = {
+                name: locationNameInput.value,
+                maps: {
+                    google: mapGoogleInput.value,
+                    yandex: mapYandexInput.value,
+                    _2gis: map2gisInput.value
+                },
+                socials: {
+                    telegram: socialTelegramInput.value,
+                    whatsapp: socialWhatsappInput.value,
+                    vk: socialVkInput.value,
+                    instagram: socialInstagramInput.value
+                },
+                netmonet: netmonetInput.value
+            };
+
+            const jsonString = JSON.stringify(locationData, null, 2);
+            jsonCode.textContent = jsonString;
+            jsonOutput.classList.remove('hidden');
+            
+            showMessage('JSON-код сгенерирован. Скопируйте его и вставьте в ваш файл locations.json.');
+        });
+
+        // Copy JSON to clipboard
+        copyJsonBtn.addEventListener('click', () => {
+            const textToCopy = jsonCode.textContent;
+            navigator.clipboard.writeText(textToCopy).then(() => {
+                showMessage('JSON-код успешно скопирован!');
+            }).catch(err => {
+                console.error('Error copying text: ', err);
+                showMessage('Ошибка при копировании. Пожалуйста, скопируйте текст вручную.');
+            });
+        });
+
+        // --- Routing and View Management ---
+        const hideAllViews = () => {
+            homeView.classList.add('hidden');
+            locationView.classList.add('hidden');
+            adminPanel.classList.add('hidden');
+            loginView.classList.add('hidden');
+        };
+
+        const showView = (viewName) => {
+            hideAllViews();
+            switch (viewName) {
+                case 'home':
+                    homeView.classList.remove('hidden');
+                    showAdminBtn.classList.remove('hidden');
+                    fetchLocations();
+                    break;
+                case 'location':
+                    locationView.classList.remove('hidden');
+                    showAdminBtn.classList.remove('hidden');
+                    break;
+                case 'admin':
+                    showAdminBtn.classList.add('hidden');
+                    if (isLoggedIn) {
+                        adminPanel.classList.remove('hidden');
+                    } else {
+                        loginView.classList.remove('hidden');
+                    }
+                    break;
+                default:
+                    window.location.hash = '#home';
+            }
+        };
+
+        window.addEventListener('hashchange', () => {
+            const view = window.location.hash.slice(1) || 'home';
+            showView(view);
+        });
+
+        document.addEventListener('DOMContentLoaded', () => {
+            const initialView = window.location.hash.slice(1) || 'home';
+            showView(initialView);
+        });
+
+        // Event listeners for view switching
+        document.getElementById('back-to-home-from-admin').addEventListener('click', () => {
+            window.location.hash = '#home';
+        });
+        
+        document.getElementById('back-to-home-btn').addEventListener('click', () => {
+            showView('home');
+        });
+
+        // Show location details and populate data
+        const showLocationDetails = (location) => {
+            hideAllViews();
+            locationView.classList.remove('hidden');
+
+            document.getElementById('location-name').textContent = location.name;
+            
+            // Function to set href and visibility based on URL
+            const setLink = (elementId, url) => {
+                const element = document.getElementById(elementId);
+                if (url) {
+                    element.href = url;
+                    element.classList.remove('hidden');
+                } else {
+                    element.classList.add('hidden');
+                }
+            };
+
+            // Set links for maps and toggle visibility
+            setLink('map-google', location.maps.google);
+            setLink('map-yandex', location.maps.yandex);
+            setLink('map-2gis', location.maps._2gis);
+            
+            // Set links for socials and toggle visibility
+            setLink('social-telegram', location.socials.telegram);
+            setLink('social-whatsapp', location.socials.whatsapp);
+            setLink('social-vk', location.socials.vk);
+            setLink('social-instagram', location.socials.instagram);
+            
+            // Set link for Netmonet button
+            setLink('netmonet-link', location.netmonet);
+
+            // Hide the container div if all its children are hidden
+            const mapLinksContainer = document.getElementById('map-links');
+            const socialLinksContainer = document.getElementById('social-links');
+
+            const hasVisibleMapLink = Array.from(mapLinksContainer.children).some(el => !el.classList.contains('hidden'));
+            if (!hasVisibleMapLink) {
+                mapLinksContainer.classList.add('hidden');
+            } else {
+                mapLinksContainer.classList.remove('hidden');
+            }
+
+            const hasVisibleSocialLink = Array.from(socialLinksContainer.children).some(el => !el.classList.contains('hidden'));
+            if (!hasVisibleSocialLink) {
+                socialLinksContainer.classList.add('hidden');
+            } else {
+                socialLinksContainer.classList.remove('hidden');
+            }
+        };
+
+        // --- Login Form Logic ---
+        loginForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const username = usernameInput.value;
+            const password = passwordInput.value;
+
+            // Simple hardcoded login for demonstration
+            if (username === 'admin' && password === 'admin123') {
+                isLoggedIn = true;
+                loginError.classList.add('hidden');
+                showView('admin');
+            } else {
+                loginError.textContent = 'Неправильный логин или пароль.';
+                loginError.classList.remove('hidden');
+            }
+        });
+
+    </script>
+</body>
+</html>
